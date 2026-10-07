@@ -14,5 +14,5 @@ export const STEPS: {title:string; short:string; tensor:TensorName; formula:stri
   {title:'序列还原为二维 Feature Map',short:'Reshape',tensor:'restored',formula:'[B,HW,C] → [B,H,W,C] → [B,C,H,W]',explanation:'还原使用相同的空间顺序。token i 返回 (⌊i/W⌋, i mod W)。其通道向量已携带条件信息，随后可以继续交给 U-Net 的卷积/ResNet。'},
   {title:'把条件更新加入原特征',short:'Residual',tensor:'residual',formula:'x_out = x + Δx',explanation:'残差把已有图像特征与注意力分支的更新相加。这里展示简化的外层残差；真实 SpatialTransformer 包含输出 1×1 卷积，内部 Transformer 还各自有 3 条残差。'},
 ];
-export const COLORS: Record<TensorName,string> = {feature:'#62a9f6',X:'#62a9f6',C:'#bc9bff',Q:'#62a9f6',K:'#bc9bff',V:'#f5bb67',score:'#80d7bb',scaled:'#80d7bb',weights:'#80d7bb',O:'#f5bb67',projected:'#f5bb67',restored:'#62a9f6',residual:'#62a9f6'};
+export const COLORS: Record<TensorName,string> = {feature:'#48602f',X:'#48602f',C:'#745487',Q:'#48602f',K:'#745487',V:'#936522',score:'#426b4e',scaled:'#426b4e',weights:'#426b4e',O:'#936522',projected:'#936522',restored:'#48602f',residual:'#48602f'};
 export const NAMES:Record<TensorName,string> = {feature:'空间特征 x',X:'Image tokens X',C:'Text embedding C',Q:'Query Q',K:'Key K',V:'Value V',score:'Attention score S',scaled:'Scaled logits L',weights:'Attention weights A',O:'Attention output O',projected:'Projected output Y',restored:'Spatial update Δx',residual:'Residual output'};
