@@ -30,7 +30,9 @@ jobs:
           npm ci --prefix modules/transformer
           npm ci --prefix modules/attention
           npm ci --prefix modules/depth
-      - name: Build and verify all three modules
+      - name: Verify CoTracker3 teaching interactions
+        run: node --test modules/cotracker/state.test.js
+      - name: Build and verify all four modules
         run: npm run build
       - name: Configure Pages
         uses: actions/configure-pages@v5

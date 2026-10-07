@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="沿 CoTracker3 的真实架构理解局部 4D correlation、联合迭代追踪与真实视频伪标签训练。">
+  <meta name="theme-color" content="#f7f5ef">
+  <title>CoTracker3 · 从一个 Query 到完整轨迹</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#task">跳到课堂内容</a>
+  <header class="site-header"><a class="brand" href="#task">CoTracker3 <span>结构课堂</span></a><a href="https://arxiv.org/pdf/2410.11831" target="_blank" rel="noreferrer">论文原文 ↗</a></header>
+  <nav class="chapter-nav" aria-label="学习章节">
+    <a href="#task">01 任务与起点</a><a href="#architecture">02 完整架构</a><a href="#correlation">03 匹配与迭代</a><a href="#joint">04 联合 Transformer</a><a href="#modes">05 Online / Offline</a><a href="#training">06 伪标签训练</a><a href="#evidence">07 结构对比与查证</a>
+  </nav>
+  <main id="lesson"></main>
+  <footer class="page-footer"><strong>CoTracker3: Simpler and Better Point Tracking by Pseudo-Labelling Real Videos</strong><p>依据 arXiv:2410.11831v1 与官方代码 82e02e8（2026-10-07 核对）。空间、运动与匹配图用于解释结构，不运行模型权重。</p><a href="https://github.com/facebookresearch/co-tracker/tree/82e02e8029753ad4ef13cf06be7f4fc5facdda4d" target="_blank" rel="noreferrer">核对的官方代码 ↗</a></footer>
+  <noscript>本课堂的图解交互需要启用 JavaScript。</noscript>
+</body>
+</html>

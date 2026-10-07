@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="从 Transformer 到 U-Net Attention，再到 Depth Anything。在三个交互课堂中，逐步观察架构、注意力与 Tensor 数据流。">
+  <meta name="description" content="Transformer、U-Net Attention、Depth Anything 与 CoTracker3：四个独立交互课堂，观察模型架构、注意力、视觉追踪与训练数据流。">
   <meta name="theme-color" content="#142321">
   <title>AI Visual Lab · 模型交互课堂</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
@@ -19,15 +19,16 @@
       <a href="#transformer" data-module="transformer"><span class="nav-dot violet"></span>Transformer</a>
       <a href="#attention" data-module="attention"><span class="nav-dot orange"></span>U-Net Attention</a>
       <a href="#depth" data-module="depth"><span class="nav-dot green"></span>Depth Anything</a>
+      <a href="#cotracker" data-module="cotracker"><span class="nav-dot ochre"></span>CoTracker3</a>
     </nav>
     <span class="header-note">看见模型如何思考 <span aria-hidden="true">↗</span></span>
   </header>
   <main id="main" tabindex="-1">
     <div id="home" class="home">
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy"><div class="eyebrow"><span></span> INTERACTIVE MODEL EXPLORER <small>01 — 03</small></div>
+        <div class="hero-copy"><div class="eyebrow"><span></span> INTERACTIVE MODEL EXPLORER <small>01 — 04</small></div>
           <h1 id="hero-title">把模型拆开，<br>让理解<span class="underline">发生。</span></h1>
-          <p>从注意力计算到完整视觉架构，沿着 Tensor 的流动，<br class="desktop-break">在三个交互课堂中，一步步看清模型内部。</p>
+          <p>从注意力计算到视觉追踪，沿着数据与更新的路径，<br class="desktop-break">在四个交互课堂中，一步步看清模型内部。</p>
           <a class="primary-cta" href="#transformer">从 Transformer 开始 <span aria-hidden="true">↗</span></a>
           <a class="continue-cta" id="continue" href="#transformer" hidden>继续上次的课堂 <span aria-hidden="true">→</span></a>
         </div>
@@ -38,7 +39,7 @@
         </div>
       </section>
       <section class="modules" aria-labelledby="modules-title">
-        <div class="section-top"><div><span class="eyebrow">THE LABS</span><h2 id="modules-title">三个模块，一条理解路径。</h2></div><span class="section-note">选择一个课堂，开始探索 <span aria-hidden="true">↙</span></span></div>
+        <div class="section-top"><div><span class="eyebrow">THE LABS</span><h2 id="modules-title">四个模块，一条理解路径。</h2></div><span class="section-note">选择一个课堂，开始探索 <span aria-hidden="true">↙</span></span></div>
         <div class="card-grid">
           <a class="module-card transformer" href="#transformer">
             <div class="card-top"><span class="module-number">01 / 基础架构</span><span class="card-arrow" aria-hidden="true">↗</span></div>
@@ -58,9 +59,15 @@
             <div class="card-body"><span class="card-kicker">PATCH → DEPTH MAP</span><h3>Depth Anything</h3><p>从图像 Patch 到深度图，追踪 V1 / V2 与 DPT 的完整数据流。</p><div class="tags"><span>V1 / V2</span><span>16 步架构</span><span>Tensor 维度</span></div></div>
             <div class="card-footer"><span>进入交互课堂</span><span aria-hidden="true">→</span></div>
           </a>
+          <a class="module-card cotracker" href="#cotracker">
+            <div class="card-top"><span class="module-number">04 / 视频追踪</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+            <div class="card-art" aria-hidden="true"><div class="tracking-art"><b>Query + Video</b><span>↓</span><b>Local 4D Correlation</b><span>↓</span><b>Joint Update ↶ Resample</b></div></div>
+            <div class="card-body"><span class="card-kicker">MATCH → REFINE → LEARN</span><h3>CoTracker3</h3><p>从一个 Query 到完整轨迹，观察局部匹配、联合更新与真实视频伪标签训练。</p><div class="tags"><span>4D Correlation</span><span>迭代闭环</span><span>Multi-Teacher</span></div></div>
+            <div class="card-footer"><span>进入结构课堂</span><span aria-hidden="true">→</span></div>
+          </a>
         </div>
       </section>
-      <section class="learning-path" aria-label="建议学习顺序"><span class="path-heading">建议学习顺序 <small>LEARNING PATH</small></span><a href="#transformer"><b>01</b> 理解注意力</a><span aria-hidden="true">→</span><a href="#attention"><b>02</b> 观察跨模态交互</a><span aria-hidden="true">→</span><a href="#depth"><b>03</b> 追踪视觉数据流</a><span class="path-note">也可以从任意模块开始</span></section>
+      <section class="learning-path" aria-label="建议学习顺序"><span class="path-heading">建议学习顺序 <small>LEARNING PATH</small></span><a href="#transformer"><b>01</b> 理解注意力</a><span aria-hidden="true">→</span><a href="#attention"><b>02</b> 观察跨模态交互</a><span aria-hidden="true">→</span><a href="#depth"><b>03</b> 追踪视觉数据流</a><span aria-hidden="true">→</span><a href="#cotracker"><b>04</b> 理解联合追踪</a></section>
       <footer class="site-footer"><span class="footer-brand">AI VISUAL LAB <span>·</span> 模型交互课堂</span><span>逐步观察 · 本地交互 · 自主探索</span><span class="footer-note">可视化与数值示例用于教学</span></footer>
     </div>
     <section id="classroom" class="classroom" aria-label="交互课堂" hidden>
@@ -69,6 +76,6 @@
       <div id="loading" class="loading" role="status" hidden><span></span>正在打开课堂…</div>
     </section>
   </main>
-  <noscript><p>请启用 JavaScript 以使用统一模块导航。也可以直接打开 <a href="./modules/transformer/">Transformer</a>、<a href="./modules/attention/">U-Net Attention</a>、<a href="./modules/depth/">Depth Anything</a>。</p></noscript>
+  <noscript><p>请启用 JavaScript 以使用统一模块导航。也可以直接打开 <a href="./modules/transformer/">Transformer</a>、<a href="./modules/attention/">U-Net Attention</a>、<a href="./modules/depth/">Depth Anything</a>、<a href="./modules/cotracker/">CoTracker3</a>。</p></noscript>
 </body>
 </html>

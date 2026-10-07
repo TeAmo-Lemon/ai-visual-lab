@@ -1,5 +1,5 @@
 import {spawnSync} from 'node:child_process';
-import {cpSync} from 'node:fs';
+import {cpSync,mkdirSync} from 'node:fs';
 import {verify} from './verify.mjs';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
@@ -15,5 +15,9 @@ for (const name of ['transformer','attention','depth']) {
   }
 }
 cpSync(path.join(root,'web'),path.join(root,'dist'),{recursive:true});
+mkdirSync(path.join(root,'dist/modules/cotracker'),{recursive:true});
+for (const name of ['index.html','style.css','app.js','sources.js','state.js','diagrams.js']) {
+  cpSync(path.join(root,'modules/cotracker',name),path.join(root,'dist/modules/cotracker',name));
+}
 verify(path.join(root,'dist'));
-console.log('All three modules built and internal assets verified.');
+console.log('All four modules built and internal assets verified.');

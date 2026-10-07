@@ -1,5 +1,5 @@
 'use strict';
-const modules={transformer:'Transformer',attention:'U-Net Attention',depth:'Depth Anything'};
+const modules={transformer:'Transformer',attention:'U-Net Attention',depth:'Depth Anything',cotracker:'CoTracker3'};
 const frames=new Map();
 let active='home';
 const home=document.getElementById('home');
