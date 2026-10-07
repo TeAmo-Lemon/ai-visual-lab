@@ -1,0 +1,4 @@
+node_modules/
+dist/
+.openai/*.local.json
+*.tsbuildinfo

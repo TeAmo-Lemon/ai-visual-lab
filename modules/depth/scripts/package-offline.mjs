@@ -1,0 +1,12 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+let html=await fs.readFile('dist/index.html','utf8');
+const script=html.match(/<script[^>]+src="([^"]+)"[^>]*><\/script>/);
+const stylesheet=html.match(/<link[^>]+href="([^"]+\.css)"[^>]*>/);
+if(!script||!stylesheet)throw Error('Unexpected Vite output');
+const js=await fs.readFile(path.join('dist',script[1]),'utf8');
+const css=(await fs.readFile(path.join('dist',stylesheet[1]),'utf8')).replace(/@import\s*(?:url\([^)]*\)|"[^"]*")[^;]*;/g,'');
+html=html.replace(script[0],()=>`<script type="module">${js.replaceAll('</script','<\\/script')}</script>`).replace(stylesheet[0],()=>`<style>${css}</style>`);
+if(/src="\/assets\//.test(html)||/<link[^>]+href="\/assets\//.test(html))throw Error('External asset remaining');
+await fs.writeFile('../Depth-Anything-Visual-Lab.html',html);
+console.log('Standalone HTML generated; no network needed for application assets.');

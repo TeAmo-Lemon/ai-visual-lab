@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="从 Transformer 到 U-Net Attention，再到 Depth Anything。在三个交互课堂中，逐步观察架构、注意力与 Tensor 数据流。">
+  <meta name="theme-color" content="#142321">
+  <title>AI Visual Lab · 模型交互课堂</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="AI Visual Lab 首页"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>AI VISUAL <b>LAB</b></span></a>
+    <nav class="module-nav" aria-label="模块导航">
+      <a href="#home" data-module="home">总览</a>
+      <a href="#transformer" data-module="transformer"><span class="nav-dot violet"></span>Transformer</a>
+      <a href="#attention" data-module="attention"><span class="nav-dot orange"></span>U-Net Attention</a>
+      <a href="#depth" data-module="depth"><span class="nav-dot green"></span>Depth Anything</a>
+    </nav>
+    <span class="header-note">看见模型如何思考 <span aria-hidden="true">↗</span></span>
+  </header>
+  <main id="main" tabindex="-1">
+    <div id="home" class="home">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy"><div class="eyebrow"><span></span> INTERACTIVE MODEL EXPLORER <small>01 — 03</small></div>
+          <h1 id="hero-title">把模型拆开，<br>让理解<span class="underline">发生。</span></h1>
+          <p>从注意力计算到完整视觉架构，沿着 Tensor 的流动，<br class="desktop-break">在三个交互课堂中，一步步看清模型内部。</p>
+          <a class="primary-cta" href="#transformer">从 Transformer 开始 <span aria-hidden="true">↗</span></a>
+          <a class="continue-cta" id="continue" href="#transformer" hidden>继续上次的课堂 <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="diagram-label"><span>FOLLOW THE DATA</span><span>● LIVE EXPLORATION</span></div>
+          <div class="diagram"><div class="tensor-input"><span>INPUT</span><div class="token-grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><code>[ B, N, C ]</code></div><div class="flow-arrow">→</div><div class="attention-block"><small>ATTENTION</small><div class="qkv"><b>Q</b><b>K</b><b>V</b></div><div class="attention-matrix"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><code>softmax(QKᵀ / √d) V</code></div><div class="flow-arrow">→</div><div class="tensor-output"><span>OUTPUT</span><div class="output-layers"><i></i><i></i><i></i></div><code>[ B, N, C ]</code></div></div>
+          <div class="diagram-foot"><span class="tiny-dot"></span>从输入，到权重，再到输出。<span>TRACE / INSPECT / LEARN</span></div>
+        </div>
+      </section>
+      <section class="modules" aria-labelledby="modules-title">
+        <div class="section-top"><div><span class="eyebrow">THE LABS</span><h2 id="modules-title">三个模块，一条理解路径。</h2></div><span class="section-note">选择一个课堂，开始探索 <span aria-hidden="true">↙</span></span></div>
+        <div class="card-grid">
+          <a class="module-card transformer" href="#transformer">
+            <div class="card-top"><span class="module-number">01 / 基础架构</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+            <div class="card-art" aria-hidden="true"><div class="transformer-art"><div class="mini-tokens"><i></i><i></i><i></i><i></i></div><span>↓</span><div class="mini-block">MULTI-HEAD ATTENTION</div><span>↓</span><div class="mini-block secondary">FEED FORWARD</div><div class="residual-path"></div></div></div>
+            <div class="card-body"><span class="card-kicker">ATTENTION → GENERATION</span><h3>Transformer</h3><p>沿着 token 的计算路径，观察注意力、多头机制与生成过程。</p><div class="tags"><span>Token</span><span>Multi-Head</span><span>逐步计算</span></div></div>
+            <div class="card-footer"><span>进入交互课堂</span><span aria-hidden="true">→</span></div>
+          </a>
+          <a class="module-card attention" href="#attention">
+            <div class="card-top"><span class="module-number">02 / 生成模型</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+            <div class="card-art" aria-hidden="true"><div class="unet-art"><div class="unet-side"><i></i><i></i><i></i></div><div class="unet-center"><span>TEXT CONDITION</span><i>Q × K → V</i><small>CROSS ATTENTION</small></div><div class="unet-side right"><i></i><i></i><i></i></div></div></div>
+            <div class="card-body"><span class="card-kicker">IMAGE × TEXT</span><h3>U-Net Attention</h3><p>拆解 Latent Diffusion，观察图像特征如何与文本条件相遇。</p><div class="tags"><span>Self / Cross</span><span>13 步计算</span><span>SD Shape</span></div></div>
+            <div class="card-footer"><span>进入交互课堂</span><span aria-hidden="true">→</span></div>
+          </a>
+          <a class="module-card depth" href="#depth">
+            <div class="card-top"><span class="module-number">03 / 视觉理解</span><span class="card-arrow" aria-hidden="true">↗</span></div>
+            <div class="card-art" aria-hidden="true"><div class="depth-art"><div class="depth-encoder">ViT ENCODER</div><div class="depth-branches"><i>F₁</i><i>F₂</i><i>F₃</i><i>F₄</i></div><div class="depth-fusion">DPT · FEATURE FUSION</div><div class="depth-map"></div></div></div>
+            <div class="card-body"><span class="card-kicker">PATCH → DEPTH MAP</span><h3>Depth Anything</h3><p>从图像 Patch 到深度图，追踪 V1 / V2 与 DPT 的完整数据流。</p><div class="tags"><span>V1 / V2</span><span>16 步架构</span><span>Tensor 维度</span></div></div>
+            <div class="card-footer"><span>进入交互课堂</span><span aria-hidden="true">→</span></div>
+          </a>
+        </div>
+      </section>
+      <section class="learning-path" aria-label="建议学习顺序"><span class="path-heading">建议学习顺序 <small>LEARNING PATH</small></span><a href="#transformer"><b>01</b> 理解注意力</a><span aria-hidden="true">→</span><a href="#attention"><b>02</b> 观察跨模态交互</a><span aria-hidden="true">→</span><a href="#depth"><b>03</b> 追踪视觉数据流</a><span class="path-note">也可以从任意模块开始</span></section>
+      <footer class="site-footer"><span class="footer-brand">AI VISUAL LAB <span>·</span> 模型交互课堂</span><span>逐步观察 · 本地交互 · 自主探索</span><span class="footer-note">可视化与数值示例用于教学</span></footer>
+    </div>
+    <section id="classroom" class="classroom" aria-label="交互课堂" hidden>
+      <div class="classroom-meta"><span><a href="#home">全部课堂</a><span aria-hidden="true"> / </span><strong id="classroom-title"></strong></span><span class="classroom-hint">切换模块可保留当前学习位置</span><a id="expand" href="./modules/transformer/" target="_blank" rel="noopener">独立打开 <span aria-hidden="true">↗</span></a></div>
+      <div id="frames" class="frames"></div>
+      <div id="loading" class="loading" role="status" hidden><span></span>正在打开课堂…</div>
+    </section>
+  </main>
+  <noscript><p>请启用 JavaScript 以使用统一模块导航。也可以直接打开 <a href="./modules/transformer/">Transformer</a>、<a href="./modules/attention/">U-Net Attention</a>、<a href="./modules/depth/">Depth Anything</a>。</p></noscript>
+</body>
+</html>
