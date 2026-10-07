@@ -9,7 +9,7 @@ export function forwardOverview(){
  ${box(20,185,370,88,'固定 Query neighbourhood','从 tq / Q 采样一次，各轮复用')}${box(465,185,370,88,'Current track neighbourhood','每轮从 P⁽ᵐ⁾ 周围重新采样')}
  <text x="875" y="252" font-size="20" fill="#8c4e32">P⁽ᵐ⁾ 决定中心</text>${line('M205 273V310H375V343')}${line('M650 273V310H510V343')}
  ${box(230,343,440,88,'Multi-scale 4D Correlation → MLP','两 patch 全配对 → compact features','purple')}${line('M450 431V473')}
- ${box(760,335,300,96,'当前轨迹状态','Motion Fourier + C/V logit','brown')}${line('M910 431V516H770')}
+ ${box(760,335,300,96,'当前轨迹状态','Motion Fourier + C/V logit','brown')}${line('M910 220V320','#8c4e32')}${line('M1110 383H1075','#8c4e32')}${line('M910 431V516H770')}
  ${box(230,473,540,88,'Track Token + 时间编码','图像匹配证据 + 运动趋势 + C/V','purple')}${line('M500 561V596')}
  ${box(230,596,540,88,'EfficientUpdateFormer','时间注意力 + Real ↔ Proxy 联合交流','purple')}${line('M500 684V719')}
  ${box(230,719,540,88,'ΔP / ΔC / ΔV → 加到旧状态','P⁽ᵐ⁺¹⁾ / C⁽ᵐ⁺¹⁾ / V⁽ᵐ⁺¹⁾','brown')}
