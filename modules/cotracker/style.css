@@ -7,3 +7,5 @@
 .iteration-loop{padding-right:60px}.loop-return{position:absolute;right:17px;top:135px;bottom:210px;width:25px;border-right:3px solid #8c4e32;border-bottom:3px solid #8c4e32;border-top:3px solid #8c4e32;border-radius:0 10px 10px 0;pointer-events:none}.loop-return span{position:absolute;top:-27px;left:-10px;font-size:32px;line-height:1;color:#8c4e32;background:#faf7fb}@media(max-width:680px){.iteration-loop{padding-right:36px}.loop-return{right:8px;width:17px;top:660px;bottom:230px}.loop-return span{left:-12px}}
 
 .overview-scroll{overflow:auto;border:1px solid #c5c6b7;background:#fffdf7;border-radius:10px;padding:15px}.overview-scroll svg{width:100%;min-width:1050px;display:block}.forward-details{padding:15px;background:#f5f2e9}.forward-details[open]>summary{margin-bottom:22px}.spatial-example svg{min-width:620px}.legend-swatch{font-size:18px}
+
+span.grid-token{text-align:center;cursor:default}
