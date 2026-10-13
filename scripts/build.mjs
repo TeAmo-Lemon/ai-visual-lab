@@ -16,7 +16,7 @@ for (const name of ['transformer','attention','depth']) {
 }
 cpSync(path.join(root,'web'),path.join(root,'dist'),{recursive:true});
 mkdirSync(path.join(root,'dist/modules/cotracker'),{recursive:true});
-for (const name of ['index.html','style.css','app.js','sources.js','state.js','diagrams.js']) {
+for (const name of ['index.html','style.css','app.js','lessons.js','sources.js','state.js','diagrams.js']) {
   cpSync(path.join(root,'modules/cotracker',name),path.join(root,'dist/modules/cotracker',name));
 }
 verify(path.join(root,'dist'));

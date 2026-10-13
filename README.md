@@ -24,6 +24,6 @@ GitHub Pages 使用 GitHub Actions，向 `main` 提交后自动构建并发布 `
 
 首页资源、模块入口与模块资源均采用相对路径，可部署在项目子目录或域名根目录。模块导航为 `#transformer`、`#attention`、`#depth`、`#cotracker`，可直接收藏或分享。
 
-CoTracker3 为不依赖外部运行库的 HTML / CSS / ES modules 课堂，构建时一起复制，无需额外安装依赖。论文与官方代码核对说明见 [模块说明](modules/cotracker/README.md)。交互状态验证：`node --test modules/cotracker/state.test.js`。空间示意不运行模型权重，也不声称执行真实推理。
+CoTracker3 为不依赖外部运行库的 HTML / CSS / ES modules 分步课堂，构建时一起复制，无需额外安装依赖。九章沿同一段遮挡视频解释任务、完整架构、特征、4D correlation、联合 Transformer、迭代、Online / Offline、训练和复述；配有术语速查、五道理解检查和本地学习进度。论文与官方代码核对说明见 [模块说明](modules/cotracker/README.md)。交互状态验证：`node --test modules/cotracker/state.test.js`。图像、匹配矩阵和数值均为教学示意，不运行模型权重。
 
 上传图片只在浏览器本地读取；架构、动画和数值示例用于教学。
