@@ -26,4 +26,6 @@ GitHub Pages 使用 GitHub Actions，向 `main` 提交后自动构建并发布 `
 
 CoTracker3 为不依赖外部运行库的 HTML / CSS / ES modules 分步课堂，构建时一起复制，无需额外安装依赖。九章沿同一段遮挡视频解释任务、完整架构、特征、4D correlation、联合 Transformer、迭代、Online / Offline、训练和复述；配有术语速查、五道理解检查和本地学习进度。论文与官方代码核对说明见 [模块说明](modules/cotracker/README.md)。交互状态验证：`node --test modules/cotracker/state.test.js`。图像、匹配矩阵和数值均为教学示意，不运行模型权重。
 
-上传图片只在浏览器本地读取；架构、动画和数值示例用于教学。
+Depth Anything 以 V2 ViT-L 和 518×518 输入为统一例子，用五节串起任务、ViT 特征、DPT 多尺度融合、相对深度输出和 V1/V2 训练。移除了自动播放、模拟推理、图片上传和自测题库；只保留章节导航、融合步骤说明及按需展开的尺寸与源码。详见 [模块说明](modules/depth/README.md)。
+
+其他模块的上传图片只在浏览器本地读取；架构、动画和数值示例用于教学。
