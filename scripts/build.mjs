@@ -1,5 +1,5 @@
 import {spawnSync} from 'node:child_process';
-import {cpSync,mkdirSync} from 'node:fs';
+import {cpSync,mkdirSync,rmSync} from 'node:fs';
 import {verify} from './verify.mjs';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
@@ -16,7 +16,10 @@ for (const name of ['transformer','attention','depth']) {
 }
 cpSync(path.join(root,'web'),path.join(root,'dist'),{recursive:true});
 mkdirSync(path.join(root,'dist/modules/cotracker'),{recursive:true});
-for (const name of ['index.html','style.css','app.js','lessons.js','sources.js','state.js','diagrams.js']) {
+for (const name of ['app.js','lessons.js','sources.js','state.js','diagrams.js']) {
+  rmSync(path.join(root,'dist/modules/cotracker',name),{force:true});
+}
+for (const name of ['index.html','style.css']) {
   cpSync(path.join(root,'modules/cotracker',name),path.join(root,'dist/modules/cotracker',name));
 }
 verify(path.join(root,'dist'));

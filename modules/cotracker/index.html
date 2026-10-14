@@ -3,29 +3,159 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="从零理解 CoTracker3：用同一段视频逐步看懂输入输出、特征、4D 相关性、联合 Transformer、迭代闭环与伪标签训练。">
+  <meta name="description" content="用静态图讲清 CoTracker3：怎样辨认同一个点，怎样利用前后帧和其他点，怎样反复修正位置。">
   <meta name="theme-color" content="#f7f8f4">
-  <title>CoTracker3 · 从零看懂点追踪</title>
+  <title>CoTracker3 · 怎样追踪同一个点</title>
   <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
   <link rel="stylesheet" href="./style.css">
-  <script type="module" src="./app.js"></script>
 </head>
 <body>
-  <a class="skip" href="#lesson">跳到课堂内容</a>
+  <a class="skip" href="#task">跳到正文</a>
   <header class="site-header">
-    <a class="brand" href="#task"><span class="brand-icon" aria-hidden="true">◎</span><span>CoTracker<b>3</b><small>点追踪 · 从零到架构</small></span></a>
-    <div class="header-actions"><button id="show-map" class="quiet">架构总图 ↗</button><button id="show-glossary" class="quiet">术语速查</button><a href="https://arxiv.org/html/2410.11831v1" target="_blank" rel="noreferrer">论文 ↗</a></div>
+    <a class="brand" href="#task"><span aria-hidden="true">◎</span> CoTracker<b>3</b></a>
+    <a href="https://arxiv.org/html/2410.11831v1" target="_blank" rel="noreferrer">论文原文 ↗</a>
   </header>
-  <div class="workspace">
-    <aside class="sidebar">
-      <p class="eyebrow">THE LEARNING PATH</p><h2>沿着一个点，<br>走完一次推理。</h2>
-      <nav id="chapter-nav" aria-label="学习章节"></nav>
-      <div class="progress-box"><div><span>学习进度</span><output id="progress-label">0 / 9</output></div><progress id="progress" max="9" value="0" aria-label="已浏览章节数"></progress><p>每章只解决一个问题。<br>术语可点击，细节按需展开。</p></div>
-      <p class="sidebar-note">主线：CoTracker3<br>图解与数值为教学示意</p>
-    </aside>
-    <main id="lesson" tabindex="-1"></main>
-  </div>
-  <dialog id="glossary-dialog" aria-labelledby="glossary-title"><div class="dialog-top"><h2 id="glossary-title">术语速查</h2><button id="close-glossary" aria-label="关闭术语速查">✕</button></div><div id="glossary-content"></div></dialog>
-  <noscript><p class="noscript">本课堂需要 JavaScript 来显示逐步图解。你也可以阅读 <a href="https://arxiv.org/html/2410.11831v1">CoTracker3 论文</a>。</p></noscript>
+  <main>
+    <section id="task" class="opening">
+      <p class="eyebrow">CoTracker3 · 架构讲解</p>
+      <h1>在视频里，找回同一个点。</h1>
+      <p class="lead">你在第一帧的小车上点一下。小车移动、被挡住、再出现，模型要始终追踪<strong>那个物体表面的同一个点</strong>。</p>
+      <div class="story" aria-label="同一个点在遮挡前、遮挡中和再次出现后的示意">
+        <figure>
+          <svg viewBox="0 0 300 170" role="img" aria-label="遮挡前：用户指定小车上的一个点">
+            <rect width="300" height="170" rx="8" fill="#edf3eb"/><path d="M0 133H300" stroke="#cbd8c8"/>
+            <rect x="35" y="69" width="91" height="52" rx="14" fill="#bcd4c2" stroke="#709982" stroke-width="2"/>
+            <path d="M51 83L109 107M51 107L109 83" stroke="#91b49c" stroke-width="2"/>
+            <circle cx="53" cy="135" r="9" fill="#64846e"/><circle cx="108" cy="135" r="9" fill="#64846e"/>
+            <rect x="160" y="33" width="63" height="105" rx="5" fill="#d4ddd2"/>
+            <circle cx="60" cy="89" r="6" fill="#b57530" stroke="white" stroke-width="2"/><circle cx="60" cy="89" r="13" fill="none" stroke="#b57530" stroke-width="2"/>
+          </svg>
+          <figcaption><b>你指定起点</b><span>这一个点，是后面要找的参照。</span></figcaption>
+        </figure>
+        <figure>
+          <svg viewBox="0 0 300 170" role="img" aria-label="遮挡中：这个点看不见，但仍然需要估计它的位置">
+            <rect width="300" height="170" rx="8" fill="#edf3eb"/><path d="M0 133H300" stroke="#cbd8c8"/>
+            <rect x="140" y="69" width="91" height="52" rx="14" fill="#bcd4c2" stroke="#709982" stroke-width="2"/>
+            <circle cx="158" cy="135" r="9" fill="#64846e"/><circle cx="213" cy="135" r="9" fill="#64846e"/>
+            <rect x="160" y="33" width="63" height="105" rx="5" fill="#c8d3c6" stroke="#a9bba5"/>
+            <path d="M172 43V128M187 43V128M202 43V128M215 43V128" stroke="#b5c4b1"/>
+            <circle cx="165" cy="89" r="11" fill="none" stroke="#b57530" stroke-width="2" stroke-dasharray="4 3"/>
+          </svg>
+          <figcaption><b>短暂看不见</b><span>仍估计位置，同时判断它被遮挡。</span></figcaption>
+        </figure>
+        <figure>
+          <svg viewBox="0 0 300 170" role="img" aria-label="再次出现：重新用可见的画面寻找同一个点">
+            <rect width="300" height="170" rx="8" fill="#edf3eb"/><path d="M0 133H300" stroke="#cbd8c8"/>
+            <rect x="160" y="33" width="63" height="105" rx="5" fill="#d4ddd2"/>
+            <rect x="216" y="69" width="76" height="52" rx="14" fill="#bcd4c2" stroke="#709982" stroke-width="2"/>
+            <path d="M229 83L278 107M229 107L278 83" stroke="#91b49c" stroke-width="2"/>
+            <circle cx="231" cy="135" r="9" fill="#64846e"/><circle cx="276" cy="135" r="9" fill="#64846e"/>
+            <circle cx="241" cy="89" r="6" fill="#b57530" stroke="white" stroke-width="2"/><circle cx="241" cy="89" r="11" fill="none" stroke="#b57530" stroke-width="2"/>
+          </svg>
+          <figcaption><b>重新出现</b><span>再次用画面里的线索修正位置。</span></figcaption>
+        </figure>
+      </div>
+      <p>输入是<strong>视频 + 你指定的起点</strong>。起点包含“在哪一帧、哪个位置”，论文称它为 <span lang="en">query</span>。你只指定一次，其他帧的位置由模型判断。</p>
+      <div class="outputs">
+        <p><b>位置 P</b><span>这个点在哪里。</span></p>
+        <p><b>可见性 V</b><span>这一帧是否看得见它。</span></p>
+        <p><b>置信度 C</b><span>模型对位置准确性有多大把握。</span></p>
+      </div>
+      <p class="caption">看得见，不代表一定找得准。可见性和位置置信度是两个不同的判断。图中虚线表示遮挡点的示意位置。</p>
+    </section>
+
+    <nav class="contents" aria-label="正文目录">
+      <a href="#architecture">完整架构</a><a href="#features">辨认线索</a><a href="#correlation">比较位置</a><a href="#joint">前后帧与其他点</a><a href="#refinement">反复修正</a>
+    </nav>
+
+    <section id="architecture">
+      <span id="recap"></span>
+      <div class="section-heading"><span>总图</span><h2>完整架构：寻找线索，修正位置，再重新寻找。</h2></div>
+      <p>先读这张图的主线，再看下面四段解释。图里的英文是对应的网络组件名称。</p>
+      <div class="architecture" aria-label="CoTracker3 完整架构：图像特征、两块局部特征比较、Transformer 判断、两个输出头和重新寻找的反馈">
+        <div class="preparation">
+          <div class="map-box green"><span>视频中的每一帧</span><b>CNN 提取辨认线索</b><small>得到大小不同的特征图，供后面的比较反复使用。</small></div>
+          <div class="map-box gold"><span>你指定的起点</span><b>确定要追踪哪个点</b><small>也确定了参照画面，以及最初的位置猜测。</small></div>
+        </div>
+        <div class="map-arrow">↓ 特征图供下面两处取用；起点确定参照，位置猜测确定搜索中心</div>
+        <div class="comparison-inputs">
+          <div class="map-box gold"><b>起点周围的特征</b><small>作为固定参照，一直保留。</small></div>
+          <div class="map-box green"><b>每帧猜测位置周围的特征</b><small>猜测改变后，在新位置重新取得。</small></div>
+        </div>
+        <div class="map-arrow">↓ 比较两边每个位置有多像</div>
+        <div class="map-box violet"><b>局部比较 → 提取有用的匹配线索</b><small>4D correlation → MLP</small></div>
+        <div class="record"><b>每个点、每一帧的当前记录</b><span>匹配线索</span><span>目前猜测的运动</span><span>可见性与定位把握</span><small>这些信息组成 tracking token，另加帧顺序信息。</small></div>
+        <div class="map-arrow">↓</div>
+        <div class="map-box violet"><b>Transformer 结合前后帧和其他点的线索</b><small>时间注意力 + 通过 proxy tokens 传递的跨点信息</small></div>
+        <div class="map-arrow">↓ 分别作出两类修正</div>
+        <div class="heads">
+          <div class="map-box"><b>位置输出头</b><span>判断当前位置该往哪里调整</span><small>flow_head</small></div>
+          <div class="map-box"><b>可见性 / 置信度输出头</b><span>更新“看得见吗、位置可信吗”</span><small>vis_conf_head</small></div>
+        </div>
+        <div class="map-arrow">↓ 把修正加到当前估计上</div>
+        <div class="map-box result"><b>得到新位置，以及新的可见性和置信度</b></div>
+        <div class="return-path"><b>↶ 还要继续修正：围绕新位置重新取得特征，再比较一遍</b><span>起点参照不变。新位置、运动和判断进入下一轮。</span></div>
+        <p class="map-end">完成多轮修正后，输出整段轨迹。</p>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="section-heading"><span>01</span><h2>先从画面里提取能辨认这个点的线索。</h2></div>
+      <p>同一个点经过光照变化后，像素颜色可能不同。只比颜色很容易认错，所以模型先用 <strong>CNN 把每帧变成一张特征图</strong>。</p>
+      <p>特征图仍保留画面中的位置，但每个位置存放的是一组学出来的数字，用来描述纹理、边缘等线索。后面利用这些描述来比较两个位置。</p>
+      <div class="feature-flow"><div><b>原始画面</b><span>颜色、明暗、纹理</span></div><i aria-hidden="true">→</i><div><b>CNN</b><span>把图像变成可比较的表示</span></div><i aria-hidden="true">→</i><div><b>特征图</b><span>每个位置都有自己的描述</span></div></div>
+      <p>模型同时保留四种大小的特征图：较细的图帮助找准位置，较粗的图让同样大小的搜索区域覆盖更大一片原始画面。这些图只需准备一次，后续修正位置时直接取用。</p>
+    </section>
+
+    <section id="correlation">
+      <div class="section-heading"><span>02</span><h2>保留一份起点参照，再在其他帧寻找相同线索。</h2></div>
+      <p>先取<strong>你点下的位置周围的一小块特征</strong>，把它作为参照。到另一帧时，模型在<strong>目前猜测的位置附近</strong>取另一小块，比较两边哪里更像。</p>
+      <div class="patch-comparison">
+        <div class="patch-side"><h3>已知点附近</h3><div class="patch-grid reference" role="img" aria-label="起点附近的一小块特征，其中一格被标出"><span></span><span></span><span></span><span></span><span class="marked"></span><span></span><span></span><span></span><span></span></div><p>固定的参照</p></div>
+        <div class="compare-label"><b>逐个比较</b><p>左边的一格，与右边所有格比较。<br>左边的其他格也这样做。</p></div>
+        <div class="patch-side"><h3>猜测位置附近</h3><div class="patch-grid candidate" role="img" aria-label="另一帧猜测位置附近的一小块特征，所有格都参与比较"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><p>随位置猜测改变</p></div>
+      </div>
+      <p>图中每个方格代表一个位置的特征。把周围的纹理也一起比较，能帮助辨认：一块重复出现的颜色容易混淆，连同旁边的边缘和图案一起看，就有更多依据。</p>
+      <div class="explanation"><h3>“4D”说的是两块区域的四个位置索引。</h3><p>要指明一次比较，需要说清四件事：<strong>参照区域里的行、列，以及待找区域里的行、列</strong>。这四个索引，就是名称里的 4D。Correlation 指的是特征之间的相似程度。</p></div>
+      <p>这些比较会产生很多数值。<strong>MLP 把它们整理成较短的一组数，保留对定位有用的线索</strong>。最终该怎样修正位置，由后面的 Transformer 结合运动和其他点的线索判断。</p>
+    </section>
+
+    <section id="joint">
+      <div class="section-heading"><span>03</span><h2>单帧看不清时，看看前后发生了什么，也参考其他点。</h2></div>
+      <p>模型给每个点在每一帧建立一份<strong>当前记录</strong>：附近匹配得怎样、目前猜测它怎样移动、是否可见、定位有多大把握。论文把这份记录叫 <span lang="en">tracking token</span>。Transformer 处理的就是这些记录。</p>
+      <div class="context-cards">
+        <div><span class="context-label">时间注意力</span><h3>把同一个点的前后帧一起看。</h3><div class="timeline" aria-label="同一个点在遮挡前、遮挡中和遮挡后都有一份记录"><span>A 可见</span><i aria-hidden="true">↔</i><span class="occluded">A 被挡住</span><i aria-hidden="true">↔</i><span>A 再出现</span></div><p>当前帧的图像不够清楚时，其他帧的线索仍然可以参与判断。</p></div>
+        <div><span class="context-label">跨点信息</span><h3>参考这一帧里其他点的运动。</h3><div class="point-context" aria-label="被遮挡的 A 可以利用可见点 B 和 C 的信息"><span>B 可见</span><span class="occluded">A 被挡住</span><span>C 可见</span></div><p>例如 A 短暂被挡住，B、C 仍然可见，它们的运动可能帮助判断 A 的位置。</p></div>
+      </div>
+      <p>直接让所有点两两参考，点多时会很费计算。实现里先让少量<strong>中间单元汇集各点的信息，再把汇集的线索提供给各点</strong>；这些单元叫 <span lang="en">proxy tokens</span>，自身不对应画面上的某个点。</p>
+      <p class="caption">模型并没有预先知道哪些点属于同一物体，也没有一条“这些点必须同速”的规则。怎样利用这些关系，是训练学出来的。</p>
+    </section>
+
+    <section id="refinement">
+      <div class="section-heading"><span>04</span><h2>位置改了，就回到画面里重新找一遍。</h2></div>
+      <p>开始时，其他帧的位置只是临时猜测。Transformer 结合上面的线索，告诉位置输出头<strong>该往哪里调整</strong>；另一个输出头更新可见性和定位把握。</p>
+      <div class="revision-loop"><span>当前猜测</span><i aria-hidden="true">→</i><span>比较附近特征</span><i aria-hidden="true">→</i><span>结合前后帧和其他点</span><i aria-hidden="true">→</i><span>修正位置</span><b>↶ 在新位置附近重新比较</b></div>
+      <p>关键在于：<strong>新位置会改变下一次在哪里寻找特征</strong>。所以每轮要重新比较，而不是拿着第一次的结果一直算。你指定的起点仍是固定参照。</p>
+      <p>遮挡时，局部画面可能只剩遮挡物，模型便更多依赖其他帧和其他点的线索。再次出现后，画面又能提供直接证据。这能帮助维持轨迹，但不保证每次都找对，也不保证每轮修正都更好。</p>
+    </section>
+
+    <section class="supplement" aria-labelledby="supplement-title">
+      <div class="section-heading"><span>补充</span><h2 id="supplement-title">两种运行方式，以及模型怎样学会追踪。</h2></div>
+      <div class="supplement-grid">
+        <div id="modes"><h3>Online / Offline</h3><p><b>Online</b> 分段向前处理视频，把上一段的预测带到下一段。<b>Offline</b> 把整段已录好的视频一起处理，可以利用更完整的前后信息。两者都使用上面这套寻找和修正的结构。</p></div>
+        <div id="training"><h3>训练与实际使用</h3><p>先用有准确轨迹的合成视频训练，再让已有追踪模型给真实视频生成轨迹标签，继续训练。实际使用时，只需要训练好的 CoTracker3、视频和起点；提供训练标签的“教师模型”不参与。</p></div>
+      </div>
+    </section>
+
+    <footer id="evidence" class="source-footer">
+      <p>以上讲解对应 CoTracker3。图为结构示意。</p>
+      <details><summary>论文与实现出处</summary><div>
+        <a href="https://arxiv.org/html/2410.11831v1#S3.S2" target="_blank" rel="noreferrer">论文 §3.2：模型架构 ↗</a>
+        <a href="https://github.com/facebookresearch/co-tracker/blob/82e02e8029753ad4ef13cf06be7f4fc5facdda4d/cotracker/models/core/cotracker/cotracker3_offline.py#L105" target="_blank" rel="noreferrer">特征、匹配与反复修正的实现 ↗</a>
+        <a href="https://github.com/facebookresearch/co-tracker/blob/82e02e8029753ad4ef13cf06be7f4fc5facdda4d/cotracker/models/core/cotracker/cotracker.py#L484" target="_blank" rel="noreferrer">时间注意力与跨点信息的实现 ↗</a>
+        <p>代码固定到 82e02e8。常用包装接口返回的轨迹和可见标志，与底层模型的三个输出有所区别。</p>
+      </div></details>
+    </footer>
+  </main>
 </body>
 </html>
